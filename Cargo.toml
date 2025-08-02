@@ -1,0 +1,13 @@
+[package]
+name = "porture"
+version = "0.1.0"
+authors = ["AptS-1547 <apts-1547@esaps.net>"]
+description = "A minimal, programmable port forwarder written in Rust"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+clap = "4.5.42"
+human-panic = "2.0.3"
+tokio = "1.47.1"
+tokio-utils = "0.1.2"
