@@ -35,14 +35,39 @@ async fn main() -> Result<()> {
                 .value_name("LEVEL")
                 .help("Log level (error, warn, info, debug, trace)")
         )
+        .arg(
+            Arg::new("init")
+                .long("init")
+                .help("Generate default configuration file and exit")
+                .action(clap::ArgAction::SetTrue)
+        )
         .get_matches();
+
+    // Handle init command
+    if matches.get_flag("init") {
+        let config_path = matches.get_one::<String>("config").unwrap();
+        match Config::create_default_config().save_to_file(config_path) {
+            Ok(_) => {
+                println!("Default configuration file created: {}", config_path);
+                println!("Please edit the configuration file to suit your needs.");
+                println!("The default configuration contains example rules that bind to localhost.");
+                return Ok(());
+            }
+            Err(e) => {
+                eprintln!("Failed to create configuration file '{}': {}", config_path, e);
+                std::process::exit(1);
+            }
+        }
+    }
 
     // Load configuration
     let config_path = matches.get_one::<String>("config").unwrap();
-    let config = match Config::from_file(config_path) {
+    let config_existed = std::path::Path::new(config_path).exists();
+    
+    let config = match Config::from_file_or_create_default(config_path) {
         Ok(config) => config,
         Err(e) => {
-            eprintln!("Failed to load configuration from '{}': {}", config_path, e);
+            eprintln!("Failed to load or create configuration file '{}': {}", config_path, e);
             std::process::exit(1);
         }
     };
@@ -65,7 +90,14 @@ async fn main() -> Result<()> {
     env_logger::init();
 
     info!("Starting Porture v{}", env!("CARGO_PKG_VERSION"));
-    info!("Loaded configuration from: {}", config_path);
+    
+    if !config_existed {
+        info!("Created default configuration file: {}", config_path);
+        info!("Please edit the configuration file to suit your needs");
+        info!("Current configuration contains example rules that bind to localhost");
+    } else {
+        info!("Loaded configuration from: {}", config_path);
+    }
 
     // Get buffer size
     let buffer_size = config.global

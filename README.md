@@ -65,10 +65,29 @@ timeout = 60
 
 ## Usage
 
+### Quick Start
+
+For first-time users, Porture can automatically generate a default configuration:
+
+```bash
+# Generate default configuration file
+./porture --init
+
+# Or generate with custom filename
+./porture --init -c my-config.toml
+```
+
+If no configuration file exists, Porture will automatically create one with example rules when you run it:
+
+```bash
+# This will auto-create config.toml if it doesn't exist
+./porture
+```
+
 ### Basic Usage
 
 ```bash
-# Use default config.toml
+# Use default config.toml (auto-created if not found)
 ./porture
 
 # Specify custom config file
@@ -76,6 +95,9 @@ timeout = 60
 
 # Set log level
 ./porture -l debug
+
+# Generate default configuration and exit
+./porture --init
 ```
 
 ### Command Line Options
