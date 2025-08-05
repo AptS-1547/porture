@@ -7,7 +7,11 @@ edition = "2024"
 
 [dependencies]
 anyhow = "1.0.98"
-clap = "4.5.42"
+clap = { version = "4.5.42", features = ["derive"] }
 human-panic = "2.0.3"
-tokio = "1.47.1"
-tokio-utils = "0.1.2"
+tokio = { version = "1.47.1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+log = "0.4"
+env_logger = "0.11"
+futures = "0.3"

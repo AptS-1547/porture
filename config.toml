@@ -1,0 +1,52 @@
+# Porture Configuration File
+# TCP/UDP Port Forwarding Tool
+
+# Global settings
+[global]
+# Log level: error, warn, info, debug, trace
+log_level = "info"
+# Buffer size for data transfer (in bytes)
+buffer_size = 8192
+
+# TCP forwarding rules
+[[tcp]]
+# Local address to bind to
+bind_addr = "0.0.0.0"
+# Local port to bind to
+bind_port = 8080
+# Target address to forward to
+target_addr = "127.0.0.1"
+# Target port to forward to
+target_port = 80
+# Optional: rule name for logging
+name = "web_proxy"
+
+[[tcp]]
+bind_addr = "0.0.0.0"
+bind_port = 2222
+target_addr = "192.168.1.100"
+target_port = 22
+name = "ssh_proxy"
+
+# UDP forwarding rules
+[[udp]]
+# Local address to bind to
+bind_addr = "0.0.0.0"
+# Local port to bind to
+bind_port = 5353
+# Target address to forward to
+target_addr = "8.8.8.8"
+# Target port to forward to
+target_port = 53
+# Optional: rule name for logging
+name = "dns_proxy"
+# UDP session timeout in seconds
+timeout = 30
+
+[[udp]]
+bind_addr = "0.0.0.0"
+bind_port = 1194
+target_addr = "vpn.example.com"
+target_port = 1194
+name = "vpn_proxy"
+timeout = 60
