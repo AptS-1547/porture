@@ -153,6 +153,10 @@ async fn main() -> Result<()> {
     )?;
 
     // Wait for termination signal or all tasks to complete
+    let mut all_tasks = Vec::new();
+    all_tasks.extend(tcp_tasks);
+    all_tasks.extend(udp_tasks);
+
     tokio::select! {
         _ = sigterm.recv() => {
             info!("Received SIGTERM, shutting down...");
@@ -160,11 +164,11 @@ async fn main() -> Result<()> {
         _ = sigint.recv() => {
             info!("Received SIGINT, shutting down...");
         }
-        _ = futures::future::try_join_all(tcp_tasks) => {
-            warn!("All TCP forwarders stopped");
-        }
-        _ = futures::future::try_join_all(udp_tasks) => {
-            warn!("All UDP forwarders stopped");
+        result = futures::future::try_join_all(all_tasks) => {
+            match result {
+                Ok(_) => warn!("All forwarders stopped"),
+                Err(e) => error!("Forwarder error: {}", e),
+            }
         }
     }
 
